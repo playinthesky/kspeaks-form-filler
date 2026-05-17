@@ -82,6 +82,24 @@ Use a two-export spike before locking the converter:
 The first real Google Docs form should be exported both ways, then compared
 against the current `progress_brief` design requirements.
 
+## DOCX Conversion Spike
+
+`scripts/convert_docx_to_hwpx.py` is a first-pass converter for local testing.
+It reads DOCX package XML directly, preserves paragraph order and table-row
+text order, then writes a minimal HWPX package.
+
+The current spike is intentionally text-first:
+
+- preserves paragraph text,
+- flattens each DOCX table row into a text row,
+- writes `Preview/PrvText.txt`,
+- writes a valid HWPX ZIP package structure,
+- does not yet preserve Word visual styles, headers, footers, images, or true
+  HWPX table objects.
+
+This is enough to prove the ingestion and packaging path. It is not the final
+production converter.
+
 ## Phase Impact
 
 - Phase 1 remains valid: public schemas, mappings, and skeletons are still the

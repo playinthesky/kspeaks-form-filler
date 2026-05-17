@@ -82,6 +82,7 @@ REQUIRED_PATHS = [
     "docs/google-docs-to-hwpx-flow-proposal_v0.1.0-alpha.md",
     "scripts/build_designed_skeletons.py",
     "scripts/audit_hwpx_structure.py",
+    "scripts/convert_docx_to_hwpx.py",
     *[
         f"templates/forms/{form_id}/skeleton/skeleton.hwpx"
         for form_id in DESIGNED_SKELETON_IDS

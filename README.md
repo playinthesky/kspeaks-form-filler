@@ -88,6 +88,12 @@ Private sample HWPX structure can be checked without printing document content:
 python3 scripts/audit_hwpx_structure.py path/to/source.hwpx
 ```
 
+DOCX source files can be converted into a test HWPX package:
+
+```bash
+python3 scripts/convert_docx_to_hwpx.py path/to/source.docx
+```
+
 The first designed skeleton pass covers `progress_brief`, `invoice`, and
 `staff_profile`. These synthetic HWPX packages are public placeholder artifacts
 for slot filling and smoke tests; final visual validation waits for private
