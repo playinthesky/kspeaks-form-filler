@@ -10,6 +10,28 @@ from xml.sax.saxutils import escape
 
 
 W_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+HP_NS = "{http://www.hancom.co.kr/hwpml/2011/paragraph}"
+
+HWPX_NAMESPACES = {
+    "ha": "http://www.hancom.co.kr/hwpml/2011/app",
+    "hp": "http://www.hancom.co.kr/hwpml/2011/paragraph",
+    "hp10": "http://www.hancom.co.kr/hwpml/2016/paragraph",
+    "hs": "http://www.hancom.co.kr/hwpml/2011/section",
+    "hc": "http://www.hancom.co.kr/hwpml/2011/core",
+    "hh": "http://www.hancom.co.kr/hwpml/2011/head",
+    "hhs": "http://www.hancom.co.kr/hwpml/2011/history",
+    "hm": "http://www.hancom.co.kr/hwpml/2011/master-page",
+    "hpf": "http://www.hancom.co.kr/schema/2011/hpf",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "opf": "http://www.idpf.org/2007/opf/",
+    "ooxmlchart": "http://www.hancom.co.kr/hwpml/2016/ooxmlchart",
+    "hwpunitchar": "http://www.hancom.co.kr/hwpml/2016/HwpUnitChar",
+    "epub": "http://www.idpf.org/2007/ops",
+    "config": "urn:oasis:names:tc:opendocument:xmlns:config:1.0",
+}
+
+for prefix, uri in HWPX_NAMESPACES.items():
+    ET.register_namespace(prefix, uri)
 
 
 @dataclass(frozen=True)
@@ -22,12 +44,20 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Convert DOCX text/table content into a test HWPX.")
     parser.add_argument("source", type=Path)
     parser.add_argument("-o", "--output", type=Path)
+    parser.add_argument(
+        "--carrier-hwpx",
+        type=Path,
+        help="Existing renderable HWPX package to reuse while replacing paragraph text.",
+    )
     args = parser.parse_args()
 
     source = args.source
     output = args.output or Path("outputs") / f"{source.stem}.hwpx"
     blocks = read_docx_blocks(source)
-    write_hwpx(source, output, blocks)
+    if args.carrier_hwpx:
+        write_hwpx_from_carrier(args.carrier_hwpx, output, blocks)
+    else:
+        write_hwpx(source, output, blocks)
 
     paragraph_count = sum(1 for block in blocks if block.kind == "paragraph")
     table_row_count = sum(1 for block in blocks if block.kind == "table_row")
@@ -84,6 +114,78 @@ def write_hwpx(source: Path, output: Path, blocks: list[Block]) -> None:
             if name == "mimetype":
                 continue
             archive.writestr(name, content, compress_type=zipfile.ZIP_DEFLATED)
+
+
+def write_hwpx_from_carrier(carrier: Path, output: Path, blocks: list[Block]) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    text_items = _expand_blocks(blocks)
+    plain_text = "\n".join(text_items)
+
+    with zipfile.ZipFile(carrier) as source_archive:
+        section_xml = source_archive.read("Contents/section0.xml")
+        rendered_section = _replace_hwp_paragraph_text(section_xml, text_items)
+
+        with zipfile.ZipFile(output, "w") as output_archive:
+            for info in source_archive.infolist():
+                content = source_archive.read(info.filename)
+                if info.filename == "Contents/section0.xml":
+                    content = rendered_section
+                elif info.filename == "Preview/PrvText.txt":
+                    content = plain_text[:4000].encode("utf-8")
+                output_archive.writestr(info, content)
+
+
+def _replace_hwp_paragraph_text(section_xml: bytes, text_items: list[str]) -> bytes:
+    root = ET.fromstring(section_xml)
+    paragraphs = root.findall(f".//{HP_NS}p")
+    text_paragraphs = [paragraph for paragraph in paragraphs if _direct_text_nodes(paragraph)]
+    if len(text_items) > len(text_paragraphs):
+        raise ValueError(
+            f"Carrier HWPX has {len(text_paragraphs)} text paragraphs, but conversion needs "
+            f"{len(text_items)} paragraphs"
+        )
+
+    item_idx = 0
+    for paragraph in paragraphs:
+        text_nodes = _direct_text_nodes(paragraph)
+        if not text_nodes:
+            continue
+        replacement = text_items[item_idx] if item_idx < len(text_items) else " "
+        item_idx += 1
+        text_nodes[0].text = replacement or " "
+        for extra_node in text_nodes[1:]:
+            extra_node.text = ""
+
+    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
+
+
+def _direct_text_nodes(paragraph: ET.Element) -> list[ET.Element]:
+    return paragraph.findall(f"./{HP_NS}run/{HP_NS}t")
+
+
+def _expand_blocks(blocks: list[Block]) -> list[str]:
+    expanded: list[str] = []
+    for block in blocks:
+        max_chars = 54 if block.kind == "table_row" else 70
+        expanded.extend(_wrap_text(block.text, max_chars=max_chars))
+    return expanded
+
+
+def _wrap_text(text: str, *, max_chars: int) -> list[str]:
+    parts: list[str] = []
+    for paragraph in text.splitlines() or [text]:
+        paragraph = paragraph.strip()
+        if not paragraph:
+            continue
+        while len(paragraph) > max_chars:
+            split_at = paragraph.rfind(" ", 0, max_chars)
+            if split_at < max_chars // 2:
+                split_at = max_chars
+            parts.append(paragraph[:split_at].strip())
+            paragraph = paragraph[split_at:].strip()
+        if paragraph:
+            parts.append(paragraph)
+    return parts
 
 
 def _paragraph_text(element: ET.Element) -> str:

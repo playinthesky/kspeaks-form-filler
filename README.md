@@ -92,6 +92,7 @@ DOCX source files can be converted into a test HWPX package:
 
 ```bash
 python3 scripts/convert_docx_to_hwpx.py path/to/source.docx
+python3 scripts/convert_docx_to_hwpx.py path/to/source.docx --carrier-hwpx path/to/sample.hwpx
 ```
 
 The first designed skeleton pass covers `progress_brief`, `invoice`, and

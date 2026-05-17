@@ -94,6 +94,7 @@ The current spike is intentionally text-first:
 - flattens each DOCX table row into a text row,
 - writes `Preview/PrvText.txt`,
 - writes a valid HWPX ZIP package structure,
+- can reuse an existing renderable HWPX carrier via `--carrier-hwpx`,
 - does not yet preserve Word visual styles, headers, footers, images, or true
   HWPX table objects.
 
