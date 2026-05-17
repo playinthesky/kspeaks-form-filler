@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "form_id": "settlement_report",
+  "ko_name": "정산보고",
+  "source_policy": {
+    "canonical_filename": "source.hwpx",
+    "path": "templates/forms/settlement_report/source.hwpx",
+    "storage": "private_data_repo",
+    "commit_to_public_git": false
+  },
+  "slots": [
+    {"id": "project_name", "label": "Project name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{project_name}}"}},
+    {"id": "settlement_period", "label": "Settlement period", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{settlement_period}}"}},
+    {"id": "revenue_total", "label": "Revenue total", "required": false, "value_type": "currency", "target": {"strategy": "placeholder_token", "token": "{{revenue_total}}"}},
+    {"id": "expense_total", "label": "Expense total", "required": false, "value_type": "currency", "target": {"strategy": "placeholder_token", "token": "{{expense_total}}"}},
+    {"id": "balance_due", "label": "Balance due", "required": true, "value_type": "currency", "target": {"strategy": "placeholder_token", "token": "{{balance_due}}"}},
+    {"id": "prepared_by", "label": "Prepared by", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{prepared_by}}"}}
+  ]
+}

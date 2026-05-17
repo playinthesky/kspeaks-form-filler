@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "form_id": "invoice",
+  "ko_name": "청구서",
+  "source_policy": {
+    "canonical_filename": "source.hwpx",
+    "path": "templates/forms/invoice/source.hwpx",
+    "storage": "private_data_repo",
+    "commit_to_public_git": false
+  },
+  "slots": [
+    {"id": "invoice_number", "label": "Invoice number", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{invoice_number}}"}},
+    {"id": "client_name", "label": "Client name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{client_name}}"}},
+    {"id": "invoice_date", "label": "Invoice date", "required": false, "value_type": "date", "format": "YYYY-MM-DD", "target": {"strategy": "placeholder_token", "token": "{{invoice_date}}"}},
+    {"id": "supply_amount", "label": "Supply amount", "required": false, "value_type": "currency", "target": {"strategy": "placeholder_token", "token": "{{supply_amount}}"}},
+    {"id": "tax_amount", "label": "Tax amount", "required": false, "value_type": "currency", "target": {"strategy": "placeholder_token", "token": "{{tax_amount}}"}},
+    {"id": "total_amount", "label": "Total amount", "required": true, "value_type": "currency", "target": {"strategy": "placeholder_token", "token": "{{total_amount}}"}}
+  ]
+}

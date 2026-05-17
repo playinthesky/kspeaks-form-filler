@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kspeaks-form-filler"
+version = "0.1.0"
+description = "Korea Speaks HWPX form filling skeleton."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "PyYAML>=6.0.1",
+]
+
+[project.scripts]
+kspeaks-form-filler = "kspeaks_form_filler.cli:main"
+
+[project.optional-dependencies]
+hwpx = [
+  "python-hwpx>=2.9.1",
+]
+dev = [
+  "pytest>=8.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

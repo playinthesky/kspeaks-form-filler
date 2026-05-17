@@ -1,0 +1,315 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://kspeaks.local/schemas/master.schema.yaml
+title: KSpeaks Form Filler master configuration
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - project
+  - runtime
+  - parser
+  - paths
+  - company
+  - output_plan
+  - data_plan
+  - validation
+  - forms
+properties:
+  $schema:
+    type: string
+  schema_version:
+    type: string
+    pattern: "^0\\.[0-9]+\\.[0-9]+$"
+  project:
+    type: object
+    additionalProperties: false
+    required:
+      - id
+      - name
+      - owner
+      - status
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      status:
+        type: string
+  runtime:
+    type: object
+    additionalProperties: false
+    required:
+      - python
+    properties:
+      python:
+        type: string
+  parser:
+    type: object
+    additionalProperties: false
+    required:
+      - selected
+      - decision_status
+    properties:
+      selected:
+        type: string
+        enum:
+          - python_hwpx
+          - kordoc
+      fallback:
+        type: string
+        enum:
+          - python_hwpx
+          - kordoc
+      decision_status:
+        type: string
+  paths:
+    type: object
+    additionalProperties: false
+    required:
+      - typography
+      - templates_root
+      - output_root
+    properties:
+      typography:
+        type: string
+      templates_root:
+        type: string
+      output_root:
+        type: string
+  company:
+    type: object
+    additionalProperties: false
+    required:
+      - legal_name_ko
+      - legal_name_en
+      - display_name
+    properties:
+      legal_name_ko:
+        type: string
+      legal_name_en:
+        type: string
+      display_name:
+        type: string
+  output_plan:
+    type: object
+    additionalProperties: false
+    required:
+      - phase_1
+      - phase_2_3
+    properties:
+      phase_1:
+        type: object
+        additionalProperties: false
+        required:
+          - formats
+          - pdf_preview
+        properties:
+          formats:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              enum:
+                - hwpx
+          pdf_preview:
+            type: string
+            const: excluded
+      phase_2_3:
+        type: object
+        additionalProperties: false
+        required:
+          - pdf_preview
+        properties:
+          pdf_preview:
+            type: string
+            const: review_later
+  data_plan:
+    type: object
+    additionalProperties: false
+    required:
+      - phase_1
+      - phase_2
+      - phase_4
+      - rejected
+    properties:
+      phase_1:
+        type: object
+        additionalProperties: false
+        required:
+          - source
+          - purpose
+          - status
+        properties:
+          source:
+            type: string
+            const: master.yaml
+          purpose:
+            type: string
+            const: static_company_info
+          status:
+            type: string
+            const: active
+      phase_2:
+        type: object
+        additionalProperties: false
+        required:
+          - source
+          - purpose
+          - formats
+          - status
+        properties:
+          source:
+            type: string
+            const: form_fixtures
+          purpose:
+            type: string
+            const: test_data
+          formats:
+            type: array
+            items:
+              type: string
+              enum:
+                - yaml
+                - json
+          status:
+            type: string
+            const: planned
+      phase_4:
+        type: object
+        additionalProperties: false
+        required:
+          - source
+          - purpose
+          - status
+        properties:
+          source:
+            type: string
+            const: google_sheets
+          purpose:
+            type: array
+            items:
+              type: string
+              enum:
+                - settlement
+                - deliverables
+                - staff_info
+          status:
+            type: string
+            const: planned
+      rejected:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required:
+            - source
+            - reason
+          properties:
+            source:
+              type: string
+              enum:
+                - csv
+                - database
+            reason:
+              type: string
+  validation:
+    type: object
+    additionalProperties: false
+    required:
+      - fail_on_missing_required
+      - flag_unmatched_slots
+      - preserve_original_layout
+      - require_hwpx_roundtrip_check
+    properties:
+      fail_on_missing_required:
+        type: boolean
+      flag_unmatched_slots:
+        type: boolean
+      preserve_original_layout:
+        type: boolean
+      require_hwpx_roundtrip_check:
+        type: boolean
+  forms:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - typography_profile
+        - template
+        - required_fields
+      properties:
+        id:
+          type: string
+          pattern: "^[a-z][a-z0-9_\\-]*$"
+        title:
+          type: string
+        description:
+          type: string
+        typography_profile:
+          type: string
+        template:
+          type: object
+          additionalProperties: false
+          required:
+            - source
+            - skeleton_hwpx
+            - manifest
+            - mapping
+          properties:
+            source:
+              type: object
+              additionalProperties: false
+              required:
+                - canonical_filename
+                - path
+                - storage
+                - allowed_locations
+                - commit_to_public_git
+              properties:
+                canonical_filename:
+                  type: string
+                  const: source.hwpx
+                path:
+                  type: string
+                  pattern: "^templates/forms/.+/source\\.hwpx$"
+                storage:
+                  type: string
+                  const: private_data_repo
+                allowed_locations:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                      - kspeaks-form-data
+                commit_to_public_git:
+                  type: boolean
+                  const: false
+            skeleton_hwpx:
+              type: string
+            manifest:
+              type: string
+            mapping:
+              type: string
+            commit_to_public_git:
+              type: object
+              additionalProperties: false
+              required:
+                - skeleton_hwpx
+                - mapping
+              properties:
+                skeleton_hwpx:
+                  type: boolean
+                  const: true
+                mapping:
+                  type: boolean
+                  const: true
+        required_fields:
+          type: array
+          items:
+            type: string

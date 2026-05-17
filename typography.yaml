@@ -1,0 +1,27 @@
+schema_version: "0.1.0"
+default_profile: default_160
+
+profiles:
+  default_160:
+    description: Default body typography for Korea Speaks form filling.
+    font:
+      family: Malgun Gothic
+      size_pt: 10
+    paragraph:
+      align: justify
+      spacing_before_pt: 0
+      spacing_after_pt: 0
+      line_spacing:
+        unit: percent
+        value: 160
+        hwpx:
+          type: PERCENT
+          value: 160
+    table_cell:
+      vertical_align: center
+      preserve_existing_padding: true
+
+rules:
+  preserve_template_styles_by_default: true
+  only_apply_profile_when_slot_has_no_existing_style: true
+  never_reflow_tables_without_explicit_approval: true

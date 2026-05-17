@@ -1,0 +1,26 @@
+.DS_Store
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# Public repo ships only the placeholder config. Real master.yaml belongs in
+# kspeaks-form-data.
+master.yaml
+
+# Generated documents and local scratch data.
+outputs/
+tmp/
+*.log
+
+# Source HWPX files stay outside Git. Commit skeleton.hwpx only after slotting.
+**/source.hwpx
+**/raw/*.hwpx
+templates/forms/**/source/*.hwpx
+
+# Keep processed templates explicit. Do not ignore *.hwpx globally.

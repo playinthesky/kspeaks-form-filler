@@ -1,0 +1,277 @@
+$schema: ./schemas/master.schema.yaml
+schema_version: "0.1.0"
+
+project:
+  id: example-form-filler
+  name: Example Form Filler
+  owner: Example Organization
+  status: phase-1-skeleton
+
+runtime:
+  python: ">=3.10"
+
+parser:
+  selected: python_hwpx
+  fallback: kordoc
+  decision_status: provisional_until_real_templates
+
+paths:
+  typography: typography.yaml
+  templates_root: templates/forms
+  output_root: outputs
+
+company:
+  legal_name_ko: Example Company
+  legal_name_en: Example Organization
+  display_name: Example Organization
+
+output_plan:
+  phase_1:
+    formats:
+      - hwpx
+    pdf_preview: excluded
+  phase_2_3:
+    pdf_preview: review_later
+
+data_plan:
+  phase_1:
+    source: master.yaml
+    purpose: static_company_info
+    status: active
+  phase_2:
+    source: form_fixtures
+    purpose: test_data
+    formats:
+      - yaml
+      - json
+    status: planned
+  phase_4:
+    source: google_sheets
+    purpose:
+      - settlement
+      - deliverables
+      - staff_info
+    status: planned
+  rejected:
+    - source: csv
+      reason: Google Sheets is the higher-level operational source.
+    - source: database
+      reason: Too heavy for the current form-filling scope.
+
+validation:
+  fail_on_missing_required: true
+  flag_unmatched_slots: true
+  preserve_original_layout: true
+  require_hwpx_roundtrip_check: true
+
+forms:
+  - id: project_proposal
+    title: Project proposal
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/project_proposal/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/project_proposal/skeleton/skeleton.hwpx
+      manifest: templates/forms/project_proposal/manifest.yaml
+      mapping: templates/forms/project_proposal/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - project_name
+      - client_name
+      - proposal_date
+  - id: service_contract
+    title: Service contract
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/service_contract/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/service_contract/skeleton/skeleton.hwpx
+      manifest: templates/forms/service_contract/manifest.yaml
+      mapping: templates/forms/service_contract/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - contract_title
+      - client_name
+      - contract_date
+  - id: quotation
+    title: Quotation
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/quotation/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/quotation/skeleton/skeleton.hwpx
+      manifest: templates/forms/quotation/manifest.yaml
+      mapping: templates/forms/quotation/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - quote_number
+      - client_name
+      - total_amount
+  - id: invoice
+    title: Invoice
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/invoice/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/invoice/skeleton/skeleton.hwpx
+      manifest: templates/forms/invoice/manifest.yaml
+      mapping: templates/forms/invoice/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - invoice_number
+      - client_name
+      - total_amount
+  - id: settlement_report
+    title: Settlement report
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/settlement_report/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/settlement_report/skeleton/skeleton.hwpx
+      manifest: templates/forms/settlement_report/manifest.yaml
+      mapping: templates/forms/settlement_report/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - project_name
+      - settlement_period
+      - balance_due
+  - id: staff_profile
+    title: Staff profile
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/staff_profile/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/staff_profile/skeleton/skeleton.hwpx
+      manifest: templates/forms/staff_profile/manifest.yaml
+      mapping: templates/forms/staff_profile/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - staff_name
+      - role_title
+      - email
+  - id: progress_brief
+    title: Progress brief
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/progress_brief/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/progress_brief/skeleton/skeleton.hwpx
+      manifest: templates/forms/progress_brief/manifest.yaml
+      mapping: templates/forms/progress_brief/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - project_name
+      - reporting_period
+      - report_date
+  - id: nda
+    title: NDA
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/nda/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/nda/skeleton/skeleton.hwpx
+      manifest: templates/forms/nda/manifest.yaml
+      mapping: templates/forms/nda/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - signer_name
+      - organization_name
+      - signed_date
+  - id: self_construction_pledge
+    title: Self-construction pledge
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/self_construction_pledge/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/self_construction_pledge/skeleton/skeleton.hwpx
+      manifest: templates/forms/self_construction_pledge/manifest.yaml
+      mapping: templates/forms/self_construction_pledge/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - project_name
+      - contractor_name
+      - pledge_date
+  - id: integrity_pledge
+    title: Integrity pledge
+    typography_profile: default_160
+    template:
+      source:
+        canonical_filename: source.hwpx
+        path: templates/forms/integrity_pledge/source.hwpx
+        storage: private_data_repo
+        allowed_locations:
+          - kspeaks-form-data
+        commit_to_public_git: false
+      skeleton_hwpx: templates/forms/integrity_pledge/skeleton/skeleton.hwpx
+      manifest: templates/forms/integrity_pledge/manifest.yaml
+      mapping: templates/forms/integrity_pledge/mapping.json
+      commit_to_public_git:
+        skeleton_hwpx: true
+        mapping: true
+    required_fields:
+      - signer_name
+      - organization_name
+      - signed_date

@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "form_id": "service_contract",
+  "ko_name": "용역계약서",
+  "source_policy": {
+    "canonical_filename": "source.hwpx",
+    "path": "templates/forms/service_contract/source.hwpx",
+    "storage": "private_data_repo",
+    "commit_to_public_git": false
+  },
+  "slots": [
+    {"id": "contract_title", "label": "Contract title", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{contract_title}}"}},
+    {"id": "client_name", "label": "Client name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{client_name}}"}},
+    {"id": "contract_date", "label": "Contract date", "required": true, "value_type": "date", "format": "YYYY-MM-DD", "target": {"strategy": "placeholder_token", "token": "{{contract_date}}"}},
+    {"id": "contract_period", "label": "Contract period", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{contract_period}}"}},
+    {"id": "contract_amount", "label": "Contract amount", "required": false, "value_type": "currency", "target": {"strategy": "placeholder_token", "token": "{{contract_amount}}"}},
+    {"id": "payment_terms", "label": "Payment terms", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{payment_terms}}"}}
+  ]
+}

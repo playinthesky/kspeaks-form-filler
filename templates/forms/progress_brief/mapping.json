@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "form_id": "progress_brief",
+  "ko_name": "중간보고",
+  "source_policy": {
+    "canonical_filename": "source.hwpx",
+    "path": "templates/forms/progress_brief/source.hwpx",
+    "storage": "private_data_repo",
+    "commit_to_public_git": false
+  },
+  "slots": [
+    {"id": "project_name", "label": "Project name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{project_name}}"}},
+    {"id": "reporting_period", "label": "Reporting period", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{reporting_period}}"}},
+    {"id": "report_date", "label": "Report date", "required": true, "value_type": "date", "format": "YYYY-MM-DD", "target": {"strategy": "placeholder_token", "token": "{{report_date}}"}},
+    {"id": "progress_summary", "label": "Progress summary", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{progress_summary}}"}},
+    {"id": "key_issue", "label": "Key issue", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{key_issue}}"}},
+    {"id": "next_action", "label": "Next action", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{next_action}}"}},
+    {"id": "prepared_by", "label": "Prepared by", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{prepared_by}}"}}
+  ]
+}

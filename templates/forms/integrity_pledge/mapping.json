@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "form_id": "integrity_pledge",
+  "ko_name": "청렴 서약서",
+  "source_policy": {
+    "canonical_filename": "source.hwpx",
+    "path": "templates/forms/integrity_pledge/source.hwpx",
+    "storage": "private_data_repo",
+    "commit_to_public_git": false
+  },
+  "slots": [
+    {"id": "signer_name", "label": "Signer name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{signer_name}}"}},
+    {"id": "organization_name", "label": "Organization name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{organization_name}}"}},
+    {"id": "project_name", "label": "Project name", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{project_name}}"}},
+    {"id": "pledge_scope", "label": "Pledge scope", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{pledge_scope}}"}},
+    {"id": "signed_date", "label": "Signed date", "required": true, "value_type": "date", "format": "YYYY-MM-DD", "target": {"strategy": "placeholder_token", "token": "{{signed_date}}"}},
+    {"id": "contact_name", "label": "Contact name", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{contact_name}}"}}
+  ]
+}

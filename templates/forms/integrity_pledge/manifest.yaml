@@ -1,0 +1,27 @@
+schema_version: "0.1.0"
+form_id: integrity_pledge
+ko_name: 청렴 서약서
+title: Integrity pledge
+status: generalized_skeleton_pending
+
+source:
+  canonical_filename: source.hwpx
+  path: templates/forms/integrity_pledge/source.hwpx
+  storage: private_data_repo
+  allowed_locations:
+    - kspeaks-form-data
+  commit_to_public_git: false
+
+build:
+  skeleton_hwpx: skeleton/skeleton.hwpx
+  mapping: mapping.json
+  typography_profile: default_160
+  commit_to_public_git:
+    skeleton_hwpx: true
+    mapping: true
+
+checks:
+  phase_1_output_format: hwpx
+  pdf_preview: excluded
+  preserve_original_layout: true
+  requires_roundtrip_validation: true

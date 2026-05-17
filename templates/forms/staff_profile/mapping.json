@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "form_id": "staff_profile",
+  "ko_name": "직원정보",
+  "source_policy": {
+    "canonical_filename": "source.hwpx",
+    "path": "templates/forms/staff_profile/source.hwpx",
+    "storage": "private_data_repo",
+    "commit_to_public_git": false
+  },
+  "slots": [
+    {"id": "staff_name", "label": "Staff name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{staff_name}}"}},
+    {"id": "role_title", "label": "Role title", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{role_title}}"}},
+    {"id": "email", "label": "Email", "required": true, "value_type": "email", "target": {"strategy": "placeholder_token", "token": "{{email}}"}},
+    {"id": "phone", "label": "Phone", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{phone}}"}},
+    {"id": "bank_name", "label": "Bank name", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{bank_name}}"}},
+    {"id": "account_holder", "label": "Account holder", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{account_holder}}"}}
+  ]
+}

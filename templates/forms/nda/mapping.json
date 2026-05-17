@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "form_id": "nda",
+  "ko_name": "비밀유지 서약서",
+  "source_policy": {
+    "canonical_filename": "source.hwpx",
+    "path": "templates/forms/nda/source.hwpx",
+    "storage": "private_data_repo",
+    "commit_to_public_git": false
+  },
+  "slots": [
+    {"id": "signer_name", "label": "Signer name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{signer_name}}"}},
+    {"id": "organization_name", "label": "Organization name", "required": true, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{organization_name}}"}},
+    {"id": "project_name", "label": "Project name", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{project_name}}"}},
+    {"id": "confidential_scope", "label": "Confidential scope", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{confidential_scope}}"}},
+    {"id": "effective_period", "label": "Effective period", "required": false, "value_type": "text", "target": {"strategy": "placeholder_token", "token": "{{effective_period}}"}},
+    {"id": "signed_date", "label": "Signed date", "required": true, "value_type": "date", "format": "YYYY-MM-DD", "target": {"strategy": "placeholder_token", "token": "{{signed_date}}"}}
+  ]
+}
