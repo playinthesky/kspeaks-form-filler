@@ -12,7 +12,7 @@ SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
 
 from kspeaks_form_filler.engine import fill_hwpx_template
-from kspeaks_form_filler.slots import load_mapping, validate_mapping
+from kspeaks_form_filler.slots import iter_slots, load_mapping, validate_mapping
 
 
 FORM_IDS = [
@@ -41,6 +41,27 @@ FORM_KO_NAMES = {
     "integrity_pledge": "청렴 서약서",
 }
 
+DESIGNED_SKELETON_IDS = [
+    "progress_brief",
+    "invoice",
+    "staff_profile",
+]
+
+SKELETON_REQUIRED_ENTRIES = {
+    "mimetype",
+    "version.xml",
+    "Contents/content.hpf",
+    "Contents/header.xml",
+    "Contents/section0.xml",
+    "Preview/PrvText.txt",
+    "settings.xml",
+    "META-INF/container.xml",
+    "META-INF/container.rdf",
+    "META-INF/manifest.xml",
+}
+
+TEXT_ENTRY_SUFFIXES = (".xml", ".txt")
+
 REQUIRED_PATHS = [
     "master.example.yaml",
     "typography.yaml",
@@ -57,6 +78,14 @@ REQUIRED_PATHS = [
     "docs/data-source-plan_v0.1.0-alpha.md",
     "docs/output-format-plan_v0.1.0-alpha.md",
     "docs/form-catalog_v0.1.0-alpha.md",
+    "docs/skeleton-design-notes_v0.1.0-alpha.md",
+    "docs/google-docs-to-hwpx-flow-proposal_v0.1.0-alpha.md",
+    "scripts/build_designed_skeletons.py",
+    "scripts/audit_hwpx_structure.py",
+    *[
+        f"templates/forms/{form_id}/skeleton/skeleton.hwpx"
+        for form_id in DESIGNED_SKELETON_IDS
+    ],
     "LICENSE",
 ]
 
@@ -72,6 +101,7 @@ def main() -> int:
     for mapping_path in mapping_paths:
         mapping_warnings.extend(validate_mapping(load_mapping(mapping_path)))
 
+    skeleton_warnings = _validate_designed_skeletons()
     smoke_ok = _run_fill_smoke_test()
 
     checks = {
@@ -100,12 +130,12 @@ def main() -> int:
         "mapping_committed": "mapping: templates/forms/project_proposal/mapping.json" in master,
         "ten_mapping_files": len(mapping_paths) == 10,
         "ko_names_present": all(
-            f'"ko_name": "{ko_name}"' in (ROOT / f"templates/forms/{form_id}/mapping.json").read_text(
-                encoding="utf-8"
-            )
+            f'"ko_name": "{ko_name}"'
+            in (ROOT / f"templates/forms/{form_id}/mapping.json").read_text(encoding="utf-8")
             for form_id, ko_name in FORM_KO_NAMES.items()
         ),
         "mapping_valid": not mapping_warnings,
+        "designed_skeletons": not skeleton_warnings,
         "fill_engine_smoke": smoke_ok,
         "real_master_ignored": "master.yaml" in gitignore,
         "forms_root": (ROOT / "templates/forms").is_dir(),
@@ -122,8 +152,52 @@ def main() -> int:
         print("mapping warnings:")
         for warning in mapping_warnings:
             print(f"  - {warning}")
+    if skeleton_warnings:
+        print("skeleton warnings:")
+        for warning in skeleton_warnings:
+            print(f"  - {warning}")
 
     return 0 if all(checks.values()) else 1
+
+
+def _validate_designed_skeletons() -> list[str]:
+    warnings = []
+    for form_id in DESIGNED_SKELETON_IDS:
+        skeleton_path = ROOT / "templates" / "forms" / form_id / "skeleton" / "skeleton.hwpx"
+        mapping_path = ROOT / "templates" / "forms" / form_id / "mapping.json"
+        if not skeleton_path.exists():
+            warnings.append(f"{form_id}: missing skeleton.hwpx")
+            continue
+        try:
+            with zipfile.ZipFile(skeleton_path, "r") as archive:
+                names = archive.namelist()
+                entry_set = set(names)
+                missing_entries = sorted(SKELETON_REQUIRED_ENTRIES.difference(entry_set))
+                if missing_entries:
+                    warnings.append(f"{form_id}: missing entries {', '.join(missing_entries)}")
+                if not names or names[0] != "mimetype":
+                    warnings.append(f"{form_id}: mimetype is not the first zip entry")
+                if archive.read("mimetype").decode("utf-8") != "application/hwp+zip":
+                    warnings.append(f"{form_id}: invalid mimetype")
+                text_entries = []
+                for name in names:
+                    if name.endswith(TEXT_ENTRY_SUFFIXES):
+                        text_entries.append(archive.read(name).decode("utf-8"))
+        except (zipfile.BadZipFile, UnicodeDecodeError) as exc:
+            warnings.append(f"{form_id}: invalid HWPX package: {exc}")
+            continue
+
+        text_blob = "\n".join(text_entries)
+        mapping = load_mapping(mapping_path)
+        for slot in iter_slots(mapping):
+            if slot.token not in text_blob:
+                warnings.append(f"{form_id}: missing token {slot.token}")
+        if form_id == "progress_brief":
+            markers = ("[HEADER_BOX", "[KEY_SUMMARY_BOX", "[TWO_COLUMN_TABLE", "#004D80", "#EF8009")
+            for marker in markers:
+                if marker not in text_blob:
+                    warnings.append(f"{form_id}: missing design marker {marker}")
+    return warnings
 
 
 def _run_fill_smoke_test() -> bool:

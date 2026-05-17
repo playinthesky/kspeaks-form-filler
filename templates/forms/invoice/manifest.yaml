@@ -2,7 +2,7 @@ schema_version: "0.1.0"
 form_id: invoice
 ko_name: 청구서
 title: Invoice
-status: generalized_skeleton_pending
+status: designed_skeleton_committed
 
 source:
   canonical_filename: source.hwpx
@@ -25,3 +25,4 @@ checks:
   pdf_preview: excluded
   preserve_original_layout: true
   requires_roundtrip_validation: true
+  design_pass: header_summary_amount_table
