@@ -84,9 +84,9 @@ against the current `progress_brief` design requirements.
 
 ## DOCX Conversion Spike
 
-`scripts/convert_docx_to_hwpx.py` is a first-pass converter for local testing.
-It reads DOCX package XML directly, preserves paragraph order and table-row
-text order, then writes a minimal HWPX package.
+`scripts/convert_docx_to_hwpx.py` is a failed/experimental spike, not a usable
+converter. It reads DOCX package XML directly and can extract paragraph/table
+text, but it does not produce a trustworthy HWPX document for real use.
 
 The current spike is intentionally text-first:
 
@@ -98,8 +98,10 @@ The current spike is intentionally text-first:
 - does not yet preserve Word visual styles, headers, footers, images, or true
   HWPX table objects.
 
-This is enough to prove the ingestion and packaging path. It is not the final
-production converter.
+Result of the local test: text extraction worked, but HWPX rendering fidelity
+failed. This path must stay blocked behind `--allow-experimental` until a real
+converter is implemented or an external converter such as LibreOffice/한글/한컴
+tooling is available.
 
 ## Phase Impact
 

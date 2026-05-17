@@ -41,15 +41,27 @@ class Block:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Convert DOCX text/table content into a test HWPX.")
+    parser = argparse.ArgumentParser(
+        description="Experimental DOCX text extraction to HWPX package spike."
+    )
     parser.add_argument("source", type=Path)
     parser.add_argument("-o", "--output", type=Path)
+    parser.add_argument(
+        "--allow-experimental",
+        action="store_true",
+        help="Required. This converter is not production-ready and may create unusable HWPX.",
+    )
     parser.add_argument(
         "--carrier-hwpx",
         type=Path,
         help="Existing renderable HWPX package to reuse while replacing paragraph text.",
     )
     args = parser.parse_args()
+    if not args.allow_experimental:
+        raise SystemExit(
+            "DOCX->HWPX conversion is experimental and not production-ready. "
+            "Use --allow-experimental only for local spike testing."
+        )
 
     source = args.source
     output = args.output or Path("outputs") / f"{source.stem}.hwpx"

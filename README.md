@@ -88,11 +88,13 @@ Private sample HWPX structure can be checked without printing document content:
 python3 scripts/audit_hwpx_structure.py path/to/source.hwpx
 ```
 
-DOCX source files can be converted into a test HWPX package:
+DOCX conversion is not production-ready. The local spike can extract DOCX text,
+but generated HWPX files are not reliable for real use yet. Run it only when
+explicitly testing the failed/experimental path:
 
 ```bash
-python3 scripts/convert_docx_to_hwpx.py path/to/source.docx
-python3 scripts/convert_docx_to_hwpx.py path/to/source.docx --carrier-hwpx path/to/sample.hwpx
+python3 scripts/convert_docx_to_hwpx.py path/to/source.docx --allow-experimental
+python3 scripts/convert_docx_to_hwpx.py path/to/source.docx --carrier-hwpx path/to/sample.hwpx --allow-experimental
 ```
 
 The first designed skeleton pass covers `progress_brief`, `invoice`, and
